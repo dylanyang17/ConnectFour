@@ -1,0 +1,2 @@
+id	wina	winb	losea	loseb	tie	bug	debug	illegal	deillegal	timeout	detimeout	loaderr	deloaderr	noentry	denoentry
+2017011071	0	0	6	6	0	0	0	0	0	0	0	0	2	0	0
