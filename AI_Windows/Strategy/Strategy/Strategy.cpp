@@ -50,7 +50,12 @@ extern "C" __declspec(dllexport) Point* getPoint(const int M, const int N, const
      //a naive example
 	static ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top);
 	static UCT uct(M, N, noX, noY, &chessBoard);
-	
+	if (lastX != chessBoard.lastX || lastY != chessBoard.lastY) {
+		// 对方有走子，需要更新当前结点和棋盘状态
+		uct.realMove(lastY);
+	}
+	y = uct.search();
+	x = uct.realMove(y);
 	
 	
 	/*

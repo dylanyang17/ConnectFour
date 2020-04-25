@@ -4,6 +4,7 @@
 class ChessBoard
 {
 public:
+	int lastX, lastY;
 	static const int MAXN = 15;
 	int* const* board;
 	int top[MAXN];
@@ -22,7 +23,7 @@ public:
 	void loadBoard();
 
 private:
-	int m, n, lastX, lastY, noX, noY;
+	int m, n, noX, noY;
 	int tmpBoard[MAXN][MAXN];
 	int tmpTop[MAXN];
 	int tmpTurn;
