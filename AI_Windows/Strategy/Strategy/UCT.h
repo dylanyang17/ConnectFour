@@ -1,6 +1,7 @@
 #ifndef UCT_H_
 #define UCT_H_
 #include "Point.h"
+#include "ChessBoard.h"
 #include <cstring>
 
 
@@ -8,12 +9,13 @@ class UCT {
 public:
 	UCT() = delete;
 
-	UCT(int m, int n, int noX, int noY);
+	UCT(int m, int n, int noX, int noY, ChessBoard* chessBoard);
 
 	// 局面结点，连边仅需要存储落子的列
 	// 注意使用数组索引模拟指针，索引为 0 的结点被定义为 NULL
 	struct Node {
-		bool isEnd;  // 是否为终止结点
+		bool isEnd;       // 是否为终止结点
+		bool expandOver;  // 记忆化标记，是否可以确认不能再扩展
 		int son[12];
 		int parent;
 		// bestColumn 表示按照公式的最优下一步走哪一列，son[bestColumn] 即对应结点，初始为 -1
@@ -23,7 +25,7 @@ public:
 			// TODO: 确保全都赋予了初值
 			std::memset(son, 0, sizeof(son));
 			parent = 0;
-			isEnd = false;
+			isEnd = expandOver = false;
 			bestColumn = -1;
 		}
 
@@ -32,9 +34,9 @@ public:
 		}
 	};
 
-	Point search(int s, int* const* board);
+	Point search(int s);
 
-	int treePolicy(int s, int* const* board);
+	int treePolicy(int s);
 
 	void updateUp();
 
@@ -53,8 +55,7 @@ private:
 	Node node[NODE_MAX];
 	int poolPtr = 0;  // node 池指针
 	
-	// 临时棋盘，用于进行推演过程
-	int tmpBoard[15][15];
+	ChessBoard* chessBoard;  // 整体上维持为当前局面（计算时可能临时改变一段时间）
 };
 
 

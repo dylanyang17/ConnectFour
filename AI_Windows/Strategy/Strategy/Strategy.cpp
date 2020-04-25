@@ -1,6 +1,8 @@
 #include <iostream>
 #include "Point.h"
 #include "Strategy.h"
+#include "UCT.h"
+#include "ChessBoard.h"
 
 
 using namespace std;
@@ -46,6 +48,8 @@ extern "C" __declspec(dllexport) Point* getPoint(const int M, const int N, const
 	*/
 	//Add your own code below
      //a naive example
+	static ChessBoard chessBoard(M, N, noX, noY, board);
+	static UCT uct(M, N, noX, noY, &chessBoard);
 	for (int i = N-1; i >= 0; i--) {
 		if (top[i] > 0) {
 			x = top[i] - 1;
