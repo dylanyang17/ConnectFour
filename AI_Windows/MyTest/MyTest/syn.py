@@ -8,7 +8,7 @@ def del_extern(filename):
             lines[i] = lines[i].replace('extern "C" __declspec(dllexport) ', '')
     with open(filename, 'w') as f:
         for i in range(len(lines)):
-            print(lines[i], file=f)
+            f.write(lines[i])
 
 
 if __name__ == '__main__':

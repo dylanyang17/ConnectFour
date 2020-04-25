@@ -14,6 +14,8 @@ public:
 
 	ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int *top, int turn);
 
+	void print();
+
 	int move(int col);
 
 	int getStatus();

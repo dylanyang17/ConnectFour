@@ -1,6 +1,7 @@
 #include "ChessBoard.h"
 #include "Judge.h"
 #include <cassert>
+#include <cstdio>
 
 ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int* top, int turn)
 {
@@ -14,6 +15,18 @@ ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int
 	for (int j = 0; j < n; ++j)
 		this->top[j] = top[j];
 	this->turn = turn;
+}
+
+
+// ¥Ú”°∆Â≈Ã
+void ChessBoard::print() {
+	for (int i = 0; i < m; ++i) {
+		for (int j = 0; j < n; ++j) {
+			fprintf(stderr, "%d ", board[i][j]);
+		}
+		fprintf(stderr, "\n");
+	}
+	fprintf(stderr, "\n");
 }
 
 
