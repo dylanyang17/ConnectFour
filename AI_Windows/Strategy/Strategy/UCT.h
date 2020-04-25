@@ -18,6 +18,7 @@ public:
 		int status;       // 结点状态。0: 未结束; 1: 对方胜利; 2: 己方胜利; 3: 平局
 		int son[12];
 		int parent;
+		int parColumn;    // 从父亲沿哪条边走过来
 		// bestColumn 表示按照公式的最优下一步走哪一列，son[bestColumn] 即对应结点，初始为 -1
 		// 而 bestColumnScore 对应这个公式最大值
 		int bestColumn;
@@ -31,7 +32,7 @@ public:
 			status = 0;
 			std::memset(son, 0, sizeof(son));
 			parent = 0;
-			bestColumn = -1;
+			bestColumn = parColumn = -1;
 			tot = win = 0;
 		}
 
@@ -50,15 +51,19 @@ public:
 
 	int defaultPolicy(int s);
 
+	double calcScore(int s, int t);
+
 	void updateUp(int s, int delta);
 
 	int newNode();
 
 
 private:
-	// TODO: 常量均需要进行调整（上调）
+	// TODO: TIME_LIM 和 NODE_MAX 均需要进行调整（上调）
 	const double TIME_LIM = 2;
 	static const int NODE_MAX = 1000000;  
+	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
+	const double alpha = 2.0;
 
 	int m, n, noX, noY;
 

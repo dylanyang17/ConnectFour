@@ -3,6 +3,7 @@
 #include <ctime>
 #include <random>
 #include <cassert>
+#include <cmath>
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
 
 UCT::UCT(int m, int n, int noX, int noY, ChessBoard *chessBoard)
@@ -48,6 +49,7 @@ int UCT::findExpandSon(int s) {
 int UCT::expand(int s, int col) {
 	int t = newNode();
 	node[t].parent = s;
+	node[t].parColumn = col;
 	node[s].son[col] = t;
 	chessBoard->move(col);
 	node[t].status = chessBoard->getStatus();
@@ -108,12 +110,26 @@ int UCT::defaultPolicy(int s) {
 }
 
 
+// 计算 s 为父亲时，儿子 t 对应的得分
+double UCT::calcScore(int s, int t) {
+	return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
+}
+
+
 // 向上更新信息
 void UCT::updateUp(int s, int delta)
 {
-	int last;
+	int last = -1;
 	do {
-		
+		node[s].tot++;
+		node[s].win += delta;
+		if (last != -1) {
+			double score = calcScore(s, last);
+			if (node[s].bestColumnScore)
+		}
+		last = s;
+		s = node[s].parent;
+		delta = 1 - delta;
 	} while (last != nowRoot);
 }
 
