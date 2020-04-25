@@ -19,7 +19,9 @@ public:
 		int son[12];
 		int parent;
 		// bestColumn 表示按照公式的最优下一步走哪一列，son[bestColumn] 即对应结点，初始为 -1
+		// 而 bestColumnScore 对应这个公式最大值
 		int bestColumn;
+		double bestColumnScore;
 
 		void init() {
 			// TODO: 确保全都赋予了初值
@@ -36,11 +38,13 @@ public:
 
 	Point search(int s);
 
+	int findExpandSon(int s);
+
 	int treePolicy(int s);
 
 	void updateUp();
 
-	int newNode(bool& suc);
+	int newNode();
 
 
 private:

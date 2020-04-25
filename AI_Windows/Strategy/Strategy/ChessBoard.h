@@ -4,11 +4,13 @@
 class ChessBoard
 {
 public:
+	static const int MAXN = 15;
 	int* const* board;
+	int top[MAXN];
 
 	ChessBoard() = delete;
 
-	ChessBoard(int m, int n, int noX, int noY, int* const* board);
+	ChessBoard(int m, int n, int noX, int noY, int* const* board, int *top);
 
 	void saveBoard();
 
@@ -16,7 +18,8 @@ public:
 
 private:
 	int m, n, noX, noY;
-	int tmpBoard[15][15];
+	int tmpBoard[MAXN][MAXN];
+	int tmpTop[MAXN];
 };
 
 #endif
