@@ -52,6 +52,7 @@ int UCT::treePolicy(int s) {
 			int t = newNode();
 			node[t].parent = s;
 			node[s].son[col] = t;
+			chessBoard->move(col);
 			s = t;
 			break;
 		}
