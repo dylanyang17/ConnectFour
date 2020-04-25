@@ -20,9 +20,18 @@ ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int
 
 // ¥Ú”°∆Â≈Ã
 void ChessBoard::print() {
+	fprintf(stderr, "  ");
+	for (int j = 0; j < n; ++j) {
+		fprintf(stderr, "%d ", j);
+	}
+	fprintf(stderr, "\n");
 	for (int i = 0; i < m; ++i) {
+		fprintf(stderr, "%d ", i);
 		for (int j = 0; j < n; ++j) {
-			fprintf(stderr, "%d ", board[i][j]);
+			if (i == noX && j == noY)
+				fprintf(stderr, "X ");
+			else
+				fprintf(stderr, "%d ", board[i][j]);
 		}
 		fprintf(stderr, "\n");
 	}

@@ -13,7 +13,7 @@ public:
 
 	int realMove(int col);
 
-	int calcBestColumn(int s);
+	int calcBestColumn(int s, bool debug=false);
 
 	// 局面结点，连边仅需要存储落子的列
 	// 注意使用数组索引模拟指针，索引为 0 的结点被定义为 NULL
@@ -78,6 +78,7 @@ private:
 	Node node[NODE_MAX];
 	int poolPtr = 0;  // node 池指针
 	int nowRoot;      // 当前真实所处结点，作为根节点
+	bool debugOn = false;
 	
 	ChessBoard* chessBoard;  // 整体上维持为当前局面（计算时可能临时改变一段时间）
 };

@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cmath>
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
+#define DEBUG    // TODO!!!
 
 UCT::UCT(int m, int n, ChessBoard *chessBoard)
 {
@@ -12,6 +13,9 @@ UCT::UCT(int m, int n, ChessBoard *chessBoard)
 	this->n = n;
 	this->chessBoard = chessBoard;
 	this->nowRoot = newNode();
+#ifdef DEBUG
+	this->debugOn = true;
+#endif
 }
 
 // 进行了真实的落子，返回落子的行数
@@ -31,12 +35,16 @@ int UCT::realMove(int col) {
 
 
 // TODO: 尝试记录 bestColumn，略微修改公式
-int UCT::calcBestColumn(int s) {
+int UCT::calcBestColumn(int s, bool debug) {
 	double bestScore;
 	int bestColumn = -1;
 	for (int j = 0; j < n; ++j) {
-		if (node[s].son[j]) {
+		int son = node[s].son[j];
+		if (son) {
 			double score = calcScore(s, node[s].son[j]);
+			if (debug) {
+				fprintf(stderr, "（%d: %d, %d, %f)\n", j, node[son].win, node[son].tot, score);
+			}
 			if (bestColumn == -1 || score > bestScore) {
 				bestScore = score;
 				bestColumn = j;
@@ -54,14 +62,18 @@ int UCT::search()
 	double inTime = timeNow();
 	chessBoard->saveBoard();
 	// TODO: 缩小调用 clock() 的次数，例如每 x 次模拟调用一次
+#ifdef DEBUG
+	for (int i = 1; i <= 100000; ++i) {
+#else
 	while (timeNow() - inTime < TIME_LIM) {
+#endif
 		// fprintf(stderr, "LALALA\n");
 		int s = treePolicy(nowRoot);
 		int delta = defaultPolicy(s);
 		updateUp(s, delta);
 		chessBoard->loadBoard();
 	}
-	int bestColumn = calcBestColumn(nowRoot);
+	int bestColumn = calcBestColumn(nowRoot, debugOn);
 	return bestColumn;
 }
 
@@ -121,10 +133,10 @@ int UCT::treePolicy(int s) {
 }
 
 
-// 从结点 s 开始进行对弈模拟，直至分出胜负，返回 s 结点收益值（即从 s 状态起手者角度考虑，胜: 1; 负: 0; 平: 0.5）
+// 从结点 s 开始进行对弈模拟，直至分出胜负，返回 s 结点收益值（即从**进入 s 状态者**角度考虑，胜: 1; 负: 0; 平: 0.5）
 // TODO: 可以加入计分策略，双方按一定规则走子
 int UCT::defaultPolicy(int s) {
-	int turn = chessBoard->turn;
+	int turn = 3 - chessBoard->turn;  // DEBUG: 注意应从**落子进入 s 状态者**角度考虑，这样每次尽量往更大的方向走才是正确的
 	int status;
 	while ((status = chessBoard->getStatus()) == 0) {
 		int col;

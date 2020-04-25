@@ -54,12 +54,23 @@ int UCT::search()
 	double inTime = timeNow();
 	chessBoard->saveBoard();
 	// TODO: 缩小调用 clock() 的次数，例如每 x 次模拟调用一次
-	while (timeNow() - inTime < TIME_LIM) {
+	for (int i = 1; i <= 100000; ++i) {
 		// fprintf(stderr, "LALALA\n");
 		int s = treePolicy(nowRoot);
+		if (node[s].parColumn == 3) {
+			//printf("HERE\n");
+		}
 		int delta = defaultPolicy(s);
 		updateUp(s, delta);
 		chessBoard->loadBoard();
+	}
+	int s = nowRoot;
+	for (int j = 0; j < n; ++j) {
+		int son = node[s].son[j];
+		if (son) {
+			double score = calcScore(s, son);
+			fprintf(stderr, "（%d: %d, %d, %f)\n", j, node[son].win, node[son].tot, score);
+		}
 	}
 	int bestColumn = calcBestColumn(nowRoot);
 	return bestColumn;
@@ -124,7 +135,7 @@ int UCT::treePolicy(int s) {
 // 从结点 s 开始进行对弈模拟，直至分出胜负，返回 s 结点收益值（即从 s 状态起手者角度考虑，胜: 1; 负: 0; 平: 0.5）
 // TODO: 可以加入计分策略，双方按一定规则走子
 int UCT::defaultPolicy(int s) {
-	int turn = chessBoard->turn;
+	int turn = 3 - chessBoard->turn;
 	int status;
 	while ((status = chessBoard->getStatus()) == 0) {
 		int col;
