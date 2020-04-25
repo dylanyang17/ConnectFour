@@ -68,7 +68,7 @@ private:
 	const double TIME_LIM = 0.8;
 	static const int NODE_MAX = 1000000;  
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
-	const double alpha = 2.0;
+	const double alpha = 0.3;
 
 	int m, n;
 
