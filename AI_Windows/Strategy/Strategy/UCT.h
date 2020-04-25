@@ -14,8 +14,8 @@ public:
 	// 局面结点，连边仅需要存储落子的列
 	// 注意使用数组索引模拟指针，索引为 0 的结点被定义为 NULL
 	struct Node {
-		bool isEnd;       // 是否为终止结点
 		bool expandOver;  // 记忆化标记，是否可以确认不能再扩展
+		int status;       // 结点状态。0: 未结束; 1: 对方胜利; 2: 己方胜利; 3: 平局
 		int son[12];
 		int parent;
 		// bestColumn 表示按照公式的最优下一步走哪一列，son[bestColumn] 即对应结点，初始为 -1
@@ -27,7 +27,8 @@ public:
 			// TODO: 确保全都赋予了初值
 			std::memset(son, 0, sizeof(son));
 			parent = 0;
-			isEnd = expandOver = false;
+			status = 0;
+			expandOver = false;
 			bestColumn = -1;
 		}
 
@@ -36,9 +37,11 @@ public:
 		}
 	};
 
-	Point search(int s);
+	Point search();
 
 	int findExpandSon(int s);
+
+	int expand(int s, int col);
 
 	int treePolicy(int s);
 
@@ -56,8 +59,10 @@ private:
 
 	// 结点相关
 	// TODO: 增加垃圾回收和内存不足判定（此时选择尽量优的即可，不再继续模拟）
+	// 垃圾回收可使用 vector 存储需要回收的根节点，使用懒惰回收方法，回收一个结点后再将其子结点放入 vector
 	Node node[NODE_MAX];
 	int poolPtr = 0;  // node 池指针
+	int nowRoot;      // 当前真实所处结点，作为根节点
 	
 	ChessBoard* chessBoard;  // 整体上维持为当前局面（计算时可能临时改变一段时间）
 };

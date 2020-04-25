@@ -2,10 +2,12 @@
 #include "Judge.h"
 #include <cassert>
 
-ChessBoard::ChessBoard(int m, int n, int noX, int noY, int* const* board, int* top)
+ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, int* top)
 {
 	this->m = m;
 	this->n = n;
+	this->lastX = lastX;
+	this->lastY = lastY;
 	this->noX = noX;
 	this->noY = noY;
 	this->board = board;
@@ -29,7 +31,8 @@ int ChessBoard::move(int col) {
 
 // 检查局面的胜负状态
 // 0: 未结束; 1: 对方胜利; 2: 己方胜利; 3: 平局
-int ChessBoard::checkStatus(int lastX, int lastY) {
+int ChessBoard::getStatus() {
+	if (lastX == -1 && lastY == -1) return 0;  // 还未开始下子
 	if (board[lastX][lastY] == 1) {
 		// 只可能是 0, 1, 3
 		if (userWin(lastX, lastY, m, n, board)) {
@@ -60,7 +63,7 @@ int ChessBoard::checkStatus(int lastX, int lastY) {
 }
 
 
-// 将局面存入 tmpBoard
+// 保存局面
 void ChessBoard::saveBoard() {
 	for (int i = 0; i < m; ++i) {
 		for (int j = 0; j < n; ++j) {
@@ -71,9 +74,10 @@ void ChessBoard::saveBoard() {
 		tmpTop[j] = top[j];
 	}
 	tmpTurn = turn;
+	tmpLastX = lastX, tmpLastY = lastY;
 }
 
-// 将局面从 tmpBoard 取出
+// 载入局面
 void ChessBoard::loadBoard() {
 	for (int i = 0; i < m; ++i) {
 		for (int j = 0; j < n; ++j) {
@@ -84,4 +88,5 @@ void ChessBoard::loadBoard() {
 		top[j] = tmpTop[j];
 	}
 	turn = tmpTurn;
+	lastX = tmpLastX, lastY = tmpLastY;
 }

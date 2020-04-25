@@ -11,21 +11,22 @@ public:
 
 	ChessBoard() = delete;
 
-	ChessBoard(int m, int n, int noX, int noY, int* const* board, int *top);
+	ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, int *top);
 
 	int move(int col);
 
-	int checkStatus(int lastX, int lastY);
+	int getStatus();
 
 	void saveBoard();
 
 	void loadBoard();
 
 private:
-	int m, n, noX, noY;
+	int m, n, lastX, lastY, noX, noY;
 	int tmpBoard[MAXN][MAXN];
 	int tmpTop[MAXN];
 	int tmpTurn;
+	int tmpLastX, tmpLastY;
 };
 
 #endif
