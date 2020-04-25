@@ -17,7 +17,7 @@ ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int
 }
 
 
-// 在第 col 列走子，保证合法，返回走的位置的 x 值
+// 在第 col 列走子，保证合法，返回落子的行数
 int ChessBoard::move(int col) {
 	int ret = --top[col];
 	board[ret][col] = turn;

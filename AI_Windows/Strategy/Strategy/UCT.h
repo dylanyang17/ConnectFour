@@ -11,6 +11,8 @@ public:
 
 	UCT(int m, int n, int noX, int noY, ChessBoard* chessBoard);
 
+	int realMove(int col);
+
 	// 局面结点，连边仅需要存储落子的列
 	// 注意使用数组索引模拟指针，索引为 0 的结点被定义为 NULL
 	struct Node {
@@ -41,11 +43,11 @@ public:
 		}
 	};
 
-	Point search();
+	int search();
 
 	int findExpandSon(int s);
 
-	int expand(int s, int col);
+	int expand(int s, int col, int &row);
 
 	int treePolicy(int s);
 

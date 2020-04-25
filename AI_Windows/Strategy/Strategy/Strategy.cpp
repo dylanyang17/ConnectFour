@@ -50,13 +50,7 @@ extern "C" __declspec(dllexport) Point* getPoint(const int M, const int N, const
      //a naive example
 	static ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top);
 	static UCT uct(M, N, noX, noY, &chessBoard);
-	for (int i = N-1; i >= 0; i--) {
-		if (top[i] > 0) {
-			x = top[i] - 1;
-			y = i;
-			break;
-		}
-	}
+	
 	
 	
 	/*

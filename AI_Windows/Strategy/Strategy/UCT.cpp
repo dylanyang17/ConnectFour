@@ -16,8 +16,22 @@ UCT::UCT(int m, int n, int noX, int noY, ChessBoard *chessBoard)
 	this->nowRoot = newNode();
 }
 
-// 搜索落子点
-Point UCT::search()
+// 进行了真实的落子，返回落子的行数
+int UCT::realMove(int col) {
+	if (node[nowRoot].son[col] == 0) {
+		// 该儿子结点并未扩展
+		int row;
+		nowRoot = expand(nowRoot, col, row);
+		return row;
+	}
+	else {
+		nowRoot = node[nowRoot].son[col];
+		return chessBoard->move(col);
+	}
+}
+
+// 搜索最佳的落子列
+int UCT::search()
 {
 	double inTime = timeNow();
 	chessBoard->saveBoard();
@@ -28,7 +42,7 @@ Point UCT::search()
 		updateUp(s, delta);
 		chessBoard->loadBoard();
 	}
-	return Point(0, 0);
+	return node[nowRoot].bestColumn;
 }
 
 // 判断 s 结点是否可以向一个新儿子扩展
@@ -46,12 +60,12 @@ int UCT::findExpandSon(int s) {
 
 // 扩展，从结点 s （对应chessBoard）开始走 col 列
 // 返回新扩展的结点
-int UCT::expand(int s, int col) {
+int UCT::expand(int s, int col, int &row) {
 	int t = newNode();
 	node[t].parent = s;
 	node[t].parColumn = col;
 	node[s].son[col] = t;
-	chessBoard->move(col);
+	row = chessBoard->move(col);
 	node[t].status = chessBoard->getStatus();
 	return t;
 }
@@ -68,11 +82,9 @@ int UCT::treePolicy(int s) {
 		}
 		if (!node[s].expandOver) {
 			// 可扩展
-			int t = newNode();
-			node[t].parent = s;
-			node[s].son[col] = t;
-			chessBoard->move(col);
-			s = t;
+			assert(col != -1);  // TODO
+			int row;
+			s = expand(s, col, row);
 			break;
 		}
 		else {
@@ -125,7 +137,10 @@ void UCT::updateUp(int s, int delta)
 		node[s].win += delta;
 		if (last != -1) {
 			double score = calcScore(s, last);
-			if (node[s].bestColumnScore)
+			if (node[s].bestColumn == -1 || node[s].bestColumnScore < score) {
+				node[s].bestColumn = node[last].parColumn;
+				node[s].bestColumnScore = score;
+			}
 		}
 		last = s;
 		s = node[s].parent;
