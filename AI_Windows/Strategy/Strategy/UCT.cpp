@@ -1,6 +1,7 @@
 #include "UCT.h"
 #include "Judge.h"
 #include <ctime>
+#include <random>
 #include <cassert>
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
 
@@ -48,8 +49,8 @@ int UCT::expand(int s, int col) {
 	int t = newNode();
 	node[t].parent = s;
 	node[s].son[col] = t;
-	int row = chessBoard->move(col);
-	node[t].status = chessBoard->getStatus(row, col);
+	chessBoard->move(col);
+	node[t].status = chessBoard->getStatus();
 	return t;
 }
 
@@ -75,6 +76,7 @@ int UCT::treePolicy(int s) {
 		else {
 			// 不可扩展，则向最优的儿子结点走
 			assert(node[s].bestColumn != -1);  // TODO
+			chessBoard->move(node[s].bestColumn);
 			s = node[s].son[node[s].bestColumn];
 		}
 	}
@@ -82,17 +84,37 @@ int UCT::treePolicy(int s) {
 }
 
 
-// 从结点 s 开始进行对弈模拟，直至分出胜负，返回收益值（胜: 1; 负: 0; 平: 0.5），只是理论上不可能为负
+// 从结点 s 开始进行对弈模拟，直至分出胜负，返回 s 结点收益值（即从 s 状态起手者角度考虑，胜: 1; 负: 0; 平: 0.5）
 // TODO: 可以加入计分策略，双方按一定规则走子
-int defaultPolicy(int s) {
-
+int UCT::defaultPolicy(int s) {
+	int turn = chessBoard->turn;
+	int status;
+	while ((status = chessBoard->getStatus()) == 0) {
+		int col;
+		do {
+			col = rand() % m;
+		} while (chessBoard->top[col] == 0);
+		chessBoard->move(col);
+	}
+	if (turn == status) {
+		return 1;
+	}
+	else if (status == 3) {
+		return 0.5;
+	}
+	else {
+		return 0;
+	}
 }
 
 
 // 向上更新信息
-void UCT::updateUp()
+void UCT::updateUp(int s, int delta)
 {
-
+	int last;
+	do {
+		
+	} while (last != nowRoot);
 }
 
 

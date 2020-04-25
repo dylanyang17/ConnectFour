@@ -25,6 +25,7 @@ int ChessBoard::move(int col) {
 	if (col == noY && top[col] - 1 == noX)
 		top[col]--;
 	turn = 3 - turn;
+	lastX = ret, lastY = col;
 	return ret;
 }
 

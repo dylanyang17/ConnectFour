@@ -22,14 +22,17 @@ public:
 		// 而 bestColumnScore 对应这个公式最大值
 		int bestColumn;
 		double bestColumnScore;
+		// tot 存放模拟总次数，win 存放模拟中胜利次数
+		int tot, win;
 
 		void init() {
 			// TODO: 确保全都赋予了初值
+			expandOver = false;
+			status = 0;
 			std::memset(son, 0, sizeof(son));
 			parent = 0;
-			status = 0;
-			expandOver = false;
 			bestColumn = -1;
+			tot = win = 0;
 		}
 
 		Node() {
@@ -45,7 +48,9 @@ public:
 
 	int treePolicy(int s);
 
-	void updateUp();
+	int defaultPolicy(int s);
+
+	void updateUp(int s, int delta);
 
 	int newNode();
 
