@@ -48,7 +48,7 @@ extern "C" __declspec(dllexport) Point* getPoint(const int M, const int N, const
 	*/
 	//Add your own code below
      //a naive example
-	static ChessBoard chessBoard(M, N, noX, noY, board);
+	static ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top);
 	static UCT uct(M, N, noX, noY, &chessBoard);
 	for (int i = N-1; i >= 0; i--) {
 		if (top[i] > 0) {
