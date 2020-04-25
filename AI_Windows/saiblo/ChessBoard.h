@@ -12,7 +12,7 @@ public:
 
 	ChessBoard() = delete;
 
-	ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int *top, int turn);
+	ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int *top);
 
 	int move(int col);
 

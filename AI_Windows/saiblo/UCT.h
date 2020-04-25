@@ -65,7 +65,7 @@ public:
 
 private:
 	// TODO: TIME_LIM 和 NODE_MAX 均需要进行调整（上调）
-	const double TIME_LIM = 0.8;
+	const double TIME_LIM = 2;
 	static const int NODE_MAX = 1000000;  
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
 	const double alpha = 2.0;

@@ -55,7 +55,6 @@ int UCT::search()
 	chessBoard->saveBoard();
 	// TODO: 缩小调用 clock() 的次数，例如每 x 次模拟调用一次
 	while (timeNow() - inTime < TIME_LIM) {
-		fprintf(stderr, "LALALA\n");
 		int s = treePolicy(nowRoot);
 		int delta = defaultPolicy(s);
 		updateUp(s, delta);

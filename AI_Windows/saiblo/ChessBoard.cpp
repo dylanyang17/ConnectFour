@@ -2,7 +2,7 @@
 #include "Judge.h"
 #include <cassert>
 
-ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int* top, int turn)
+ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int* top)
 {
 	this->m = m;
 	this->n = n;
@@ -13,7 +13,7 @@ ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int
 	this->board = board;
 	for (int j = 0; j < n; ++j)
 		this->top[j] = top[j];
-	this->turn = turn;
+	turn = 2;  // 注意初始化时一定为己方回合
 }
 
 
