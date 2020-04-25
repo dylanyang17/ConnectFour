@@ -9,7 +9,7 @@ class UCT {
 public:
 	UCT() = delete;
 
-	UCT(int m, int n, int noX, int noY, ChessBoard* chessBoard);
+	UCT(int m, int n, ChessBoard* chessBoard);
 
 	int realMove(int col);
 
@@ -23,7 +23,7 @@ public:
 		int parColumn;    // 从父亲沿哪条边走过来
 		// bestColumn 表示按照公式的最优下一步走哪一列，son[bestColumn] 即对应结点，初始为 -1
 		// 而 bestColumnScore 对应这个公式最大值
-		int bestColumn;
+		// int bestColumn;
 		double bestColumnScore;
 		// tot 存放模拟总次数，win 存放模拟中胜利次数
 		int tot, win;
@@ -34,7 +34,8 @@ public:
 			status = 0;
 			std::memset(son, 0, sizeof(son));
 			parent = 0;
-			bestColumn = parColumn = -1;
+			parColumn = -1;
+			// bestColumn = -1;
 			tot = win = 0;
 		}
 
@@ -67,7 +68,7 @@ private:
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
 	const double alpha = 2.0;
 
-	int m, n, noX, noY;
+	int m, n;
 
 	// 结点相关
 	// TODO: 增加垃圾回收和内存不足判定（此时选择尽量优的即可，不再继续模拟）

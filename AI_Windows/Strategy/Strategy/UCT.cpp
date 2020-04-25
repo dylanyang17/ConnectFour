@@ -6,17 +6,16 @@
 #include <cmath>
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
 
-UCT::UCT(int m, int n, int noX, int noY, ChessBoard *chessBoard)
+UCT::UCT(int m, int n, ChessBoard *chessBoard)
 {
 	this->m = m;
 	this->n = n;
-	this->noX = noX;
-	this->noY = noY;
 	this->chessBoard = chessBoard;
 	this->nowRoot = newNode();
 }
 
 // 进行了真实的落子，返回落子的行数
+// TODO: 垃圾回收
 int UCT::realMove(int col) {
 	if (node[nowRoot].son[col] == 0) {
 		// 该儿子结点并未扩展
@@ -30,6 +29,25 @@ int UCT::realMove(int col) {
 	}
 }
 
+
+// TODO: 尝试记录 bestColumn，略微修改公式
+int UCT::calcBestColumn(int s) {
+	double bestScore;
+	int bestColumn = -1;
+	for (int j = 0; j < n; ++j) {
+		if (node[s].son[j]) {
+			double score = calcScore(s, node[s].son[j]);
+			if (bestColumn == -1 || score > bestScore) {
+				bestScore = score;
+				bestColumn = j;
+			}
+		}
+	}
+	assert(bestColumn != -1);  // TODO
+	return bestColumn;
+}
+
+
 // 搜索最佳的落子列
 int UCT::search()
 {
@@ -42,7 +60,8 @@ int UCT::search()
 		updateUp(s, delta);
 		chessBoard->loadBoard();
 	}
-	return node[nowRoot].bestColumn;
+	int bestColumn = calcBestColumn(nowRoot);
+	return bestColumn;
 }
 
 // 判断 s 结点是否可以向一个新儿子扩展
@@ -89,9 +108,12 @@ int UCT::treePolicy(int s) {
 		}
 		else {
 			// 不可扩展，则向最优的儿子结点走
-			assert(node[s].bestColumn != -1);  // TODO
-			chessBoard->move(node[s].bestColumn);
-			s = node[s].son[node[s].bestColumn];
+			//assert(node[s].bestColumn != -1);  // TODO
+			//chessBoard->move(node[s].bestColumn);
+			//s = node[s].son[node[s].bestColumn];
+			int bestColumn = calcBestColumn(s);
+			chessBoard->move(bestColumn);
+			s = node[s].son[bestColumn];
 		}
 	}
 	return s;
@@ -135,13 +157,13 @@ void UCT::updateUp(int s, int delta)
 	do {
 		node[s].tot++;
 		node[s].win += delta;
-		if (last != -1) {
-			double score = calcScore(s, last);
-			if (node[s].bestColumn == -1 || node[s].bestColumnScore < score) {
-				node[s].bestColumn = node[last].parColumn;
-				node[s].bestColumnScore = score;
-			}
-		}
+		//if (last != -1) {  // TODO: 可以尝试使用 bestColumn 并且更改计分形态以改进算法
+		//	double score = calcScore(s, last);
+		//	if (node[s].bestColumn == -1 || node[s].bestColumnScore < score) {
+		//		node[s].bestColumn = node[last].parColumn;
+		//		node[s].bestColumnScore = score;
+		//	}
+		//}
 		last = s;
 		s = node[s].parent;
 		delta = 1 - delta;
