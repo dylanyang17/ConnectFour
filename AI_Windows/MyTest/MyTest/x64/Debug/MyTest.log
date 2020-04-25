@@ -1,3 +1,0 @@
-﻿  UCT.cpp
-D:\Work\ConnectFour\AI_Windows\MyTest\MyTest\UCT.cpp(151,10): warning C4244: “return”: 从“double”转换到“int”，可能丢失数据
-  MyTest.vcxproj -> D:\Work\ConnectFour\AI_Windows\MyTest\x64\Debug\MyTest.exe
