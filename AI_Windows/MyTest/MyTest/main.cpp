@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <iostream>
+#include <cstdlib>
+#include <algorithm>
 #include "Strategy.h"
 #include "Point.h"
 #include "ChessBoard.h"
@@ -14,14 +16,31 @@ int turn = 2;
 void loadSample1(int **board) {
 	// 计算机只需要走 3 则立马胜利
 	board[M-1][0] = board[M-1][1] = board[M-1][2] = 2;
-	top[0] = top[1] = top[2] = M - 1;
-	
+	// top[0] = top[1] = top[2] = M - 1;
+}
+
+void loadSample2(int** board) {
+	//
+	//    0 1 2 3 4 5 6 7 8
+	//	0 0 0 0 0 0 0 0 0 0
+	//	1 0 0 0 0 0 0 0 0 0
+	//	2 0 0 0 0 0 0 0 0 0
+	//	3 0 0 0 X 0 0 0 0 0
+	//	4 0 0 0 0 0 0 0 0 0
+	//	5 0 0 0 0 2 2 0 0 0
+	//	6 0 0 0 0 1 2 0 0 0
+	//	7 0 0 0 1 2 1 0 0 0
+	//	8 0 0 2 1 1 2 1 0 0
+	board[M - 1][6] = board[M - 2][5] = board[M - 3][4] = 1;
+	board[M - 1][5] = board[M - 2][4] = 2;
+	board[M - 1][4] = 1;
+	board[M - 1][3] = board[M - 2][3] = 1;
 }
 
 int main() {
 	srand(1000);
 
-	//
+	// init
 	int** board = new int* [M];
 	for (int i = 0; i < M; i++) {
 		board[i] = new int[N];
@@ -30,18 +49,27 @@ int main() {
 		}
 	}
 	for (int j = 0; j < N; ++j) top[j] = M;
-	//
 
 	// load Sample
-	loadSample1(board);
+	loadSample2(board);
+
+	// update _board and top
+	for (int i = 0; i < M; i++) {
+		for (int j = 0; j < N; j++) {
+			if (board[i][j]) top[j] = std::min(top[j], i);
+			else if (top[j] < i) {
+				printf("Wrong Sample!!!!!!!!");
+				return 0;
+			}
+		}
+	}
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
 			_board[i * N + j] = board[i][j];
 		}
 	}
-	//
 
-
+	// run
 	ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top, turn);
 	printf("初始局面：\n");
 	chessBoard.print();
