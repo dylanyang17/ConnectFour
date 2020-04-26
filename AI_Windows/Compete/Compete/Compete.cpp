@@ -13,6 +13,8 @@ using namespace std;
 
 #pragma comment(lib, "winmm.lib")
 
+bool debugOn = true;
+
 typedef Point* (*GETPOINT)(const int M, const int N, const int* _top, const int* _board, const int lastX, const int lastY, const int noX, const int noY);
 typedef void (*CLEARPOINT)(Point* p);
 
@@ -263,6 +265,9 @@ int compete(char strategyA[], char strategyB[], bool Afirst, Data* data){
 	//Data* data = new Data();
 	
 	if(Afirst){
+		if (debugOn) {
+			cout << "A方落子....\n";
+		}
 		int res = AGo(getPointA, clearPointA, data);
 		if(res != -1){
 			printBoard(data);
@@ -275,12 +280,26 @@ int compete(char strategyA[], char strategyB[], bool Afirst, Data* data){
 	bool aGo = false;
 	while(true){
 		if(aGo){
+			if (debugOn) {
+				cout << "A方落子....\n";
+			}
 			res = AGo(getPointA, clearPointA, data);
 			aGo = false;
+			if (debugOn) {
+				printBoard(data);
+				cout << "\n";
+			}
 		}
 		else{
+			if (debugOn) {
+				cout << "B方落子....\n";
+			}
 			res = BGo(getPointB, clearPointB, data);
 			aGo = true;
+			if (debugOn) {
+				printBoard(data);
+				cout << "\n";
+			}
 		}
 		if(res != -1){
 			printBoard(data);

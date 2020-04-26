@@ -10,9 +10,11 @@ public:
 	int top[MAXN];
 	int turn;  // 1 表示对手回合，2 表示自己回合
 
-	ChessBoard() = delete;
+	ChessBoard();
 
 	ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int *top, int turn);
+
+	void init(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int* top, int turn);
 
 	void print();
 

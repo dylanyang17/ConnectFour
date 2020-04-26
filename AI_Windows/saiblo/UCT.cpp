@@ -7,17 +7,33 @@
 #include <cassert>
 #include <cmath>
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
+// #define DEBUG
 
-UCT::UCT(int m, int n, ChessBoard *chessBoard)
+UCT::UCT() 
 {
+	;
+}
+
+UCT::UCT(int m, int n, ChessBoard* chessBoard)
+{
+	init(m, n, chessBoard);
+}
+
+// 重开一盘棋局
+void UCT::init(int m, int n, ChessBoard* chessBoard) {
+	while (!trash.empty())  trash.pop();
+	poolPtr = 0;
 	this->m = m;
 	this->n = n;
 	this->chessBoard = chessBoard;
 	this->nowRoot = newNode();
+#ifdef DEBUG
+	this->debugOn = true;
+#endif
+
 }
 
-// 进行了真实的落子，返回落子的行数
-// TODO: 垃圾回收
+// 进行了真实的落子，返回落子的行数。进行了垃圾回收
 int UCT::realMove(int col) {
 	for (int j = 0; j < n; ++j) {
 		if (j != col && node[nowRoot].son[j]) {
