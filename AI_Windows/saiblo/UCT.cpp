@@ -205,7 +205,7 @@ void UCT::updateUp(int s, int delta)
 }
 
 
-// 获得一个新节点。TODO：垃圾回收和满内存判定
+// 获得一个新节点。TODO (done)：垃圾回收和满内存判定
 int UCT::newNode() {
 	if (poolPtr < NODE_MAX - 1) {
 		++poolPtr;

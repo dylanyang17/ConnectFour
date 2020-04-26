@@ -69,12 +69,12 @@ public:
 
 private:
 	// TODO: TIME_LIM 和 NODE_MAX 均需要进行调整（上调）
-	const double TIME_LIM = 2.55;
+	const double TIME_LIM = 2.65;
 	static const int NODE_MAX = 8000000;  
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
 	const double alpha = 0.3;
 
-	const int WATCH_INTERVAL = 10;  // 每隔 10 次模拟看一次时间
+	const int WATCH_INTERVAL = 1;  // 每隔 1 次模拟看一次时间
 
 	int m, n;
 

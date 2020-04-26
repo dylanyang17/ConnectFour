@@ -6,11 +6,11 @@
 #include "Point.h"
 #include "ChessBoard.h"
 
-const int M = 9, N = 9;
+const int M = 9, N = 12;
 int top[N];
 int _board[M * N];
 int lastX = -1, lastY = -1;
-int noX = 3, noY = 3;
+int noX = 8, noY = 8;
 int turn = 2;
 
 void loadSample1(int **board) {
@@ -63,7 +63,7 @@ int main() {
 
 	// load Sample
 	//load(board);
-	 loadSample2(board);
+	// loadSample2(board);
 
 	// update _board and top
 	for (int i = 0; i < M; i++) {
