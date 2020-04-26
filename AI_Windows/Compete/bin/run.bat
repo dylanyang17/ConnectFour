@@ -1,2 +1,2 @@
 call pre.bat 
-Compete.exe Strategy.dll 50.dll result.txt 1
+Compete.exe 50.dll Strategy.dll result.txt 1

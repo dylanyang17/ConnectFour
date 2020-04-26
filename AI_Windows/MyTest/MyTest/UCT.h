@@ -8,9 +8,12 @@
 
 class UCT {
 public:
-	UCT() = delete;
+
+	UCT();
 
 	UCT(int m, int n, ChessBoard* chessBoard);
+
+	void init(int m, int n, ChessBoard* chessBoard);
 
 	int realMove(int col);
 
@@ -67,7 +70,7 @@ public:
 private:
 	// TODO: TIME_LIM 和 NODE_MAX 均需要进行调整（上调）
 	const double TIME_LIM = 0.8;
-	static const int NODE_MAX = 1000000;  
+	static const int NODE_MAX = 10000000;  
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
 	const double alpha = 0.3;
 
@@ -79,7 +82,7 @@ private:
 	// TODO: 增加垃圾回收和内存不足判定（此时选择尽量优的即可，不再继续模拟）
 	// 垃圾回收可使用 vector 存储需要回收的根节点，使用懒惰回收方法，回收一个结点后再将其子结点放入 vector
 	Node node[NODE_MAX];
-	int poolPtr = 0;  // node 池指针
+	int poolPtr;      // node 池指针
 	int nowRoot;      // 当前真实所处结点，作为根节点
 	bool debugOn = false;
 	std::stack<int> trash;

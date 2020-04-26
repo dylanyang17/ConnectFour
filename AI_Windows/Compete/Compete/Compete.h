@@ -3,7 +3,7 @@
 
 #include "Data.h"
 
-#define MAX_TIME 3000
+#define MAX_TIME INFINITE
 
 extern unsigned long timeA;
 extern unsigned long timeB;

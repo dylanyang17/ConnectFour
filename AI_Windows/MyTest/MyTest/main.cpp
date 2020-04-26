@@ -82,7 +82,8 @@ int main() {
 	}
 
 	// run
-	ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top, turn);
+	ChessBoard chessBoard;
+	chessBoard.init(M, N, lastX, lastY, noX, noY, board, top, turn);
 	printf("初始局面：\n");
 	chessBoard.print();
 	// 用户先手

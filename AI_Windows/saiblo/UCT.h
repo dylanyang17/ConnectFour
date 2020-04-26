@@ -3,6 +3,7 @@
 #include "Point.h"
 #include "ChessBoard.h"
 #include <cstring>
+#include <stack>
 
 
 class UCT {
@@ -66,9 +67,11 @@ public:
 private:
 	// TODO: TIME_LIM 和 NODE_MAX 均需要进行调整（上调）
 	const double TIME_LIM = 0.8;
-	static const int NODE_MAX = 1000000;  
+	static const int NODE_MAX = 10000000;  
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
 	const double alpha = 0.3;
+
+	const int WATCH_INTERVAL = 10;  // 每隔 100 次模拟看一次时间
 
 	int m, n;
 
@@ -79,6 +82,7 @@ private:
 	int poolPtr = 0;  // node 池指针
 	int nowRoot;      // 当前真实所处结点，作为根节点
 	bool debugOn = false;
+	std::stack<int> trash;
 	
 	ChessBoard* chessBoard;  // 整体上维持为当前局面（计算时可能临时改变一段时间）
 };

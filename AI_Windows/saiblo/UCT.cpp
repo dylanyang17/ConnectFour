@@ -19,6 +19,11 @@ UCT::UCT(int m, int n, ChessBoard *chessBoard)
 // 进行了真实的落子，返回落子的行数
 // TODO: 垃圾回收
 int UCT::realMove(int col) {
+	for (int j = 0; j < n; ++j) {
+		if (j != col && node[nowRoot].son[j]) {
+			trash.push(node[nowRoot].son[j]);
+		}
+	}
 	if (node[nowRoot].son[col] == 0) {
 		// 该儿子结点并未扩展
 		int row;
@@ -59,13 +64,19 @@ int UCT::search()
 {
 	double inTime = timeNow();
 	chessBoard->saveBoard();
-	// TODO: 缩小调用 clock() 的次数，例如每 x 次模拟调用一次
-	while (timeNow() - inTime < TIME_LIM) {
-		// fprintf(stderr, "LALALA\n");
-		int s = treePolicy(nowRoot);
-		int delta = defaultPolicy(s);
-		updateUp(s, delta);
-		chessBoard->loadBoard();
+	int cnt = 0;
+	try {
+		while (timeNow() - inTime < TIME_LIM) {
+			for (int i = 1; i <= WATCH_INTERVAL; ++i) {
+				int s = treePolicy(nowRoot);
+				int delta = defaultPolicy(s);
+				updateUp(s, delta);
+				chessBoard->loadBoard();
+			}
+		}
+	}
+	catch (int e) {
+		;
 	}
 	int bestColumn = calcBestColumn(nowRoot, debugOn);
 	return bestColumn;
@@ -180,7 +191,23 @@ void UCT::updateUp(int s, int delta)
 
 // 获得一个新节点。TODO：垃圾回收和满内存判定
 int UCT::newNode() {
-	++poolPtr;
-	node[poolPtr].init();
-	return poolPtr;
+	if (poolPtr < NODE_MAX - 1) {
+		++poolPtr;
+		node[poolPtr].init();
+		return poolPtr;
+	}
+	else if (trash.size() > 0) {
+		int s = trash.top();
+		trash.pop();
+		for (int j = 0; j < n; ++j) {
+			if (node[s].son[j]) {
+				trash.push(node[s].son[j]);
+			}
+		}
+		node[s].init();
+		return s;
+	}
+	else {
+		throw 0;
+	}
 }

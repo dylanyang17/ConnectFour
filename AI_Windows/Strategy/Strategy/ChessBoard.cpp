@@ -3,8 +3,18 @@
 #include <cassert>
 #include <cstdio>
 
+ChessBoard::ChessBoard()
+{
+	;
+}
+
 ChessBoard::ChessBoard(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int* top, int turn)
 {
+	init(m, n, lastX, lastY, noX, noY, board, top, turn);
+}
+
+
+void ChessBoard::init(int m, int n, int lastX, int lastY, int noX, int noY, int* const* board, const int* top, int turn) {
 	this->m = m;
 	this->n = n;
 	this->lastX = lastX;
