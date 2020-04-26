@@ -79,8 +79,8 @@ int main() {
 	for (int j = 0; j < N; ++j) top[j] = M;
 
 	// load Sample
-	load(board);
-	// loadSample2(board);
+	// load(board);
+	loadSample2(board);
 
 	// update _board and top
 	for (int i = 0; i < M; i++) {

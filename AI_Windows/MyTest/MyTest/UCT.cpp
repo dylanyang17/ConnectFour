@@ -6,6 +6,8 @@
 #include <random>
 #include <cassert>
 #include <cmath>
+#include <cstdio>
+#include <iostream>
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
 #define DEBUG
 
@@ -62,7 +64,7 @@ int UCT::calcBestColumn(int s, bool debug) {
 		if (son) {
 			double score = calcScore(s, node[s].son[j]);
 			if (debug) {
-				fprintf(stderr, "（%d: %d, %d, %f)\n", j, node[son].win, node[son].tot, score);
+				fprintf(stderr, "（%d: %d, %d, %s, %d, %f)\n", j, node[son].win, node[son].tot, (node[son].certWin ? "certWin" : (node[son].certLose ? "certLose" : "none")), node[son].certStep, score);
 			}
 			if (bestColumn == -1 || score > bestScore) {
 				bestScore = score;
@@ -70,7 +72,7 @@ int UCT::calcBestColumn(int s, bool debug) {
 			}
 		}
 	}
-	assert(bestColumn != -1);  // TODO
+	// assert(bestColumn != -1);  // TODO
 	return bestColumn;
 }
 
@@ -120,14 +122,17 @@ int UCT::expand(int s, int col, int& row) {
 	node[s].son[col] = t;
 	row = chessBoard->move(col);
 	node[t].status = chessBoard->getStatus();
-	if (node[t].status == 1 || node[t].status == 2) node[s].isWin = true;
+	if (node[t].status == 1 || node[t].status == 2) {
+		node[t].certLose = true;
+		node[t].certStep = 0;
+	}
 	return t;
 }
 
 // 从 s 结点，向下找到最可能扩展的结点并进行扩展，返回新扩展出的结点
-// 若直至局面结束仍未找到则返回结束局面结点
+// 若直至必胜/败态仍未找到，则返回必胜/败态结点
 int UCT::treePolicy(int s) {
-	while (node[s].status == 0) {
+	while (!(node[s].certLose || node[s].certWin)) {
 		int col = -1;
 		if (!node[s].expandOver) {
 			// 判断是否可扩展，可以则找到放置的列 col
@@ -156,7 +161,6 @@ int UCT::treePolicy(int s) {
 
 
 // 从结点 s 开始进行对弈模拟，直至分出胜负，返回 s 结点收益值（即从**进入 s 状态者**角度考虑，胜: 1; 负: 0; 平: 0.5）
-// TODO: 可以加入计分策略，双方按一定规则走子
 int UCT::defaultPolicy(int s) {
 	int turn = 3 - chessBoard->turn;  // DEBUG: 注意应从**落子进入 s 状态者**角度考虑，这样每次尽量往更大的方向走才是正确的
 	int status;
@@ -180,32 +184,58 @@ int UCT::defaultPolicy(int s) {
 
 
 // 计算 s 为父亲时，儿子 t 对应的得分
-// 特殊处理 s 走到 t 就胜利的情况（称 s 为平凡必胜态），或是 t 为平凡必胜态的情况
+// 特殊处理 t 为必胜/败态的情况
 double UCT::calcScore(int s, int t) {
-	if (node[t].status == 1 || node[t].status == 2) {
-		return SCORE_INF;
-	}
-	else if (node[t].isWin) {
+	if (node[t].certWin) {
 		return -SCORE_INF;
+	}
+	else if (node[t].certLose) {
+		return SCORE_INF;
 	}
 	else return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
 }
 
 
 // 向上更新信息
+// 注意需要更新必胜/败状态
 void UCT::updateUp(int s, int delta)
 {
 	int last = -1;
 	do {
 		node[s].tot++;
 		node[s].win += delta;
-		//if (last != -1) {  // TODO: 可以尝试使用 bestColumn 并且更改计分形态以改进算法
-		//	double score = calcScore(s, last);
-		//	if (node[s].bestColumn == -1 || node[s].bestColumnScore < score) {
-		//		node[s].bestColumn = node[last].parColumn;
-		//		node[s].bestColumnScore = score;
-		//	}
-		//}
+
+		// 更新必胜/败状态
+		if (last != -1) {
+			if (node[last].certLose) {
+				// 必胜态让 certStep 尽量小
+				if (!node[s].certWin)  node[s].certStep = node[last].certStep + 1;
+				else node[s].certStep = std::min(node[s].certStep, node[last].certStep + 1);
+				node[s].certWin = true;
+			}
+			else if (node[last].certWin && node[s].expandOver) {
+				// 确认是否所有后继都为 certWin，且必败态让 certStop 尽量大
+				bool fail = false;
+				int tmpStep = 0;
+				for (int j = 0; j < n; ++j) {
+					int son = node[s].son[j];
+					if (son) {
+						if (!node[son].certWin) {
+							fail = true;
+							break;
+						}
+						else {
+							tmpStep = std::max(tmpStep, node[son].certStep);
+						}
+					}
+				}
+				if (!fail) {
+					node[s].certLose = true;
+					node[s].certStep = tmpStep;
+				}
+			}
+		}
+
 		last = s;
 		s = node[s].parent;
 		delta = 1 - delta;
