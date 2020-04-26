@@ -78,9 +78,8 @@ int UCT::calcBestColumn(int s, bool debug) {
 
 
 // 搜索最佳的落子列
-int UCT::search()
+int UCT::search(double inTime)
 {
-	double inTime = timeNow();
 	chessBoard->saveBoard();
 	int cnt = 0;
 	try {
@@ -108,7 +107,7 @@ int UCT::findExpandSon(int s) {
 	for (int& j = node[s].lastSon; j < n; ++j) {
 		if (node[s].son[j] == 0 && chessBoard->top[j] > 0) {
 			++j;
-			return j-1;
+			return j - 1;
 		}
 	}
 	return -1;
