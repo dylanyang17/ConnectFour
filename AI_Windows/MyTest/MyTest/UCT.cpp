@@ -187,10 +187,10 @@ int UCT::defaultPolicy(int s) {
 // 特殊处理 t 为必胜/败态的情况
 double UCT::calcScore(int s, int t) {
 	if (node[t].certWin) {
-		return -SCORE_INF;
+		return -SCORE_INF + node[t].certStep;  // 越迟输越好
 	}
 	else if (node[t].certLose) {
-		return SCORE_INF;
+		return SCORE_INF - node[t].certStep;   // 越早赢越好
 	}
 	else return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
 }
