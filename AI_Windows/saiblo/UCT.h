@@ -26,6 +26,7 @@ public:
 		// bool isWin;       // **当前结点非结束状态**且存在一个后继结点状态为 1/2 (直接获胜)时，isWin 为 1
 		bool certWin, certLose;  // 博弈论中的必胜态和必败态，当未搜索完毕时两者均为 false
 		int certStep;	  // 必胜态走到结束花的最少步数，必败态走到结束花的最长步数
+		int lastSon;      // 用于加速expand，指向下一个应该枚举的儿子
 		int status;       // 结点状态。0: 未结束; 1: 对方胜利; 2: 己方胜利; 3: 平局
 		int son[12];
 		int parent;
@@ -40,6 +41,7 @@ public:
 		void init() {
 			// TODO: 确保全都赋予了初值
 			expandOver = certWin = certLose = false;
+			lastSon = 0;
 			certStep = 0;
 			status = 0;
 			std::memset(son, 0, sizeof(son));

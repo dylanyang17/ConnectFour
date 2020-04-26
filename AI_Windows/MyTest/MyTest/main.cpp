@@ -6,12 +6,12 @@
 #include "Point.h"
 #include "ChessBoard.h"
 
-const int M = 9, N = 12;
+const int M = 9, N = 9;
 int top[N];
 int _board[M * N];
 int lastX = -1, lastY = -1;
-int noX = 8, noY = 8;
-int turn = 2;
+int noX = 2, noY = 2;
+int turn = 1;
 
 void loadSample1(int **board) {
 	// 计算机只需要走 3 则立马胜利
@@ -80,18 +80,19 @@ int main() {
 
 	// load Sample
 	// load(board);
-	loadSample2(board);
+	// loadSample2(board);
 
 	// update _board and top
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
-			if (board[i][j] || (noX == i && noY == j)) top[j] = std::min(top[j], i);
+			if (board[i][j]) top[j] = std::min(top[j], i);
 			else if (top[j] < i) {
-				printf("Wrong Sample!!!!!!!!");
+				printf("Wrong Sample!!!!!!!! %d %d %d %d\n", i, j, top[j], board[i][j]);
 				return 0;
 			}
 		}
 	}
+	top[noY] = std::min(top[noY], noX);
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
 			_board[i * N + j] = board[i][j];

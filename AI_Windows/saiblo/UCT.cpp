@@ -103,11 +103,12 @@ int UCT::search()
 // 判断 s 结点是否可以向一个新儿子扩展
 // 可以则返回选择的列，否则返回 -1
 // TODO: 可考虑有策略地优先选某个新儿子，例如加入计分策略，先扩展分数高的
-// TODO: 或者对选择的列加入记忆化，减小常数
+// TODO(done): 或者对选择的列加入记忆化，减小常数
 int UCT::findExpandSon(int s) {
-	for (int j = 0; j < n; ++j) {
+	for (int& j = node[s].lastSon; j < n; ++j) {
 		if (node[s].son[j] == 0 && chessBoard->top[j] > 0) {
-			return j;
+			++j;
+			return j-1;
 		}
 	}
 	return -1;

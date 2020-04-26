@@ -1,11 +1,11 @@
 0:
-1	43095	42747
-2	66509	71565
+2	48554	50695
+2	89654	95414
 
 Stat:
-ratio of A wins : 0.5
-ratio of B wins : 0.5
+ratio of A wins : 0
+ratio of B wins : 1
 ratio of Tie : 0
 
-ratio of (A wins + tie) : 0.5
-ratio of (B wins + tie) : 0.5
+ratio of (A wins + tie) : 0
+ratio of (B wins + tie) : 1

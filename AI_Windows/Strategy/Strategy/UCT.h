@@ -56,7 +56,7 @@ public:
 		}
 	};
 
-	int search();
+	int search(double inTime);
 
 	int findExpandSon(int s);
 
@@ -75,13 +75,13 @@ public:
 
 private:
 	// TODO (done): TIME_LIM 和 NODE_MAX 均需要进行调整（上调）
-	const double TIME_LIM = 2.65;
+	const double TIME_LIM = 2.75;
 	static const int NODE_MAX = 8000000;
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
 	const double alpha = 0.6;
 	const double SCORE_INF = 1000000;
 
-	const int WATCH_INTERVAL = 30;  // 每隔 30 次模拟看一次时间
+	const int WATCH_INTERVAL = 100;  // 每隔 100 次模拟看一次时间
 
 	int m, n;
 

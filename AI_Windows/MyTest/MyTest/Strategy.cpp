@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 #include "Point.h"
 #include "Strategy.h"
 #include "UCT.h"
@@ -30,6 +31,7 @@ using namespace std;
 */
 Point* getPoint(const int M, const int N, const int* top, const int* _board, 
 	const int lastX, const int lastY, const int noX, const int noY){
+	double inTime = ((double)clock() / CLOCKS_PER_SEC);
 	/*
 		这段代码已经被修改，不再使用 new 来开辟
 	*/
@@ -67,7 +69,7 @@ Point* getPoint(const int M, const int N, const int* top, const int* _board,
 		// 对方有走子，需要更新当前结点和棋盘状态
 		uct.realMove(lastY);
 	}
-	y = uct.search();
+	y = uct.search(inTime);
 	x = uct.realMove(y);
 	
 	
