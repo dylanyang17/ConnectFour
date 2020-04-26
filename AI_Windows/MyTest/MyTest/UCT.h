@@ -11,9 +11,9 @@ public:
 
 	UCT();
 
-	UCT(int m, int n, ChessBoard* chessBoard, int turn);
+	UCT(int m, int n, ChessBoard* chessBoard);
 
-	void init(int m, int n, ChessBoard* chessBoard, int turn);
+	void init(int m, int n, ChessBoard* chessBoard);
 
 	int realMove(int col);
 
@@ -23,7 +23,7 @@ public:
 	// 注意使用数组索引模拟指针，索引为 0 的结点被定义为 NULL
 	struct Node {
 		bool expandOver;  // 记忆化标记，是否可以确认不能再扩展
-		bool isMyTurn;    // 存储该状态是否为己方先手
+		bool isWin;       // **当前结点非结束状态**且存在一个后继结点状态为 1/2 (直接获胜)时，isWin 为 1
 		int status;       // 结点状态。0: 未结束; 1: 对方胜利; 2: 己方胜利; 3: 平局
 		int son[12];
 		int parent;
@@ -37,7 +37,7 @@ public:
 
 		void init() {
 			// TODO: 确保全都赋予了初值
-			expandOver = isMyTurn = false;
+			expandOver = isWin = false;
 			status = 0;
 			std::memset(son, 0, sizeof(son));
 			parent = 0;

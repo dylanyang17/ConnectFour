@@ -14,13 +14,13 @@ UCT::UCT()
 	;
 }
 
-UCT::UCT(int m, int n, ChessBoard* chessBoard, int turn)
+UCT::UCT(int m, int n, ChessBoard* chessBoard)
 {
-	init(m, n, chessBoard, turn);
+	init(m, n, chessBoard);
 }
 
 // 重开一盘棋局
-void UCT::init(int m, int n, ChessBoard* chessBoard,) {
+void UCT::init(int m, int n, ChessBoard* chessBoard) {
 	while (!trash.empty())  trash.pop();
 	poolPtr = 0;
 	this->m = m;
@@ -120,7 +120,7 @@ int UCT::expand(int s, int col, int& row) {
 	node[s].son[col] = t;
 	row = chessBoard->move(col);
 	node[t].status = chessBoard->getStatus();
-	node[t].isMyTurn = node[s].isMyTurn ^ 1;
+	if (node[t].status == 1 || node[t].status == 2) node[s].isWin = true;
 	return t;
 }
 
@@ -180,23 +180,13 @@ int UCT::defaultPolicy(int s) {
 
 
 // 计算 s 为父亲时，儿子 t 对应的得分
-// 特殊处理 t 对应 1/2 的结束情况
+// 特殊处理 s 走到 t 就胜利的情况（称 s 为平凡必胜态），或是 t 为平凡必胜态的情况
 double UCT::calcScore(int s, int t) {
-	if (node[t].status == 2) {
-		if (node[s].isMyTurn) {
-			return SCORE_INF;
-		}
-		else {
-			return -SCORE_INF;
-		}
+	if (node[t].status == 1 || node[t].status == 2) {
+		return SCORE_INF;
 	}
-	else if (node[t].status == 1) {
-		if (node[s].isMyTurn) {
-			return -SCORE_INF;
-		}
-		else {
-			return SCORE_INF;
-		}
+	else if (node[t].isWin) {
+		return -SCORE_INF;
 	}
 	else return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
 }
