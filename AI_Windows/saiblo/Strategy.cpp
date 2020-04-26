@@ -46,7 +46,7 @@ Point* getPoint(const int M, const int N, const int* top, const int* _board,
 		根据你自己的策略来返回落子点,也就是根据你的策略完成对x,y的赋值
 		该部分对参数使用没有限制，为了方便实现，你可以定义自己新的类、.h文件、.cpp文件
 	*/
-	static ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top);
+	static ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top, 2);
 	static UCT uct(M, N, &chessBoard);
 	if (lastX != chessBoard.lastX || lastY != chessBoard.lastY) {
 		// 对方有走子，需要更新当前结点和棋盘状态

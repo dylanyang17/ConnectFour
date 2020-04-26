@@ -1,6 +1,9 @@
 #include <iostream>
 #include "Point.h"
 #include "Strategy.h"
+#include "UCT.h"
+#include "ChessBoard.h"
+
 
 using namespace std;
 
@@ -14,7 +17,7 @@ using namespace std;
 		_board : 棋盘的一维数组表示, 为了方便使用，在该函数刚开始处，我们已经将其转化为了二维数组board
 				你只需直接使用board即可，左上角为坐标原点，数组从[0][0]开始计(不是[1][1])
 				board[x][y]表示第x行、第y列的点(从0开始计)
-				board[x][y] == 0/1/2 分别对应(x,y)处 无落子/有用户的子/有程序的子,不可落子点处的值也为0
+				board[x][y] == 0/1/2 分别对应(x,y)处 无落子/有对方的子/有己方的子，不可落子点处的值也为0
 		lastX, lastY : 对方上一次落子的位置, 你可能不需要该参数，也可能需要的不仅仅是对方一步的
 				落子位置，这时你可以在自己的程序中记录对方连续多步的落子位置，这完全取决于你自己的策略
 		noX, noY : 棋盘上的不可落子点(注:其实这里给出的top已经替你处理了不可落子点，也就是说如果某一步
@@ -43,15 +46,14 @@ extern "C" __declspec(dllexport) Point* getPoint(const int M, const int N, const
 		根据你自己的策略来返回落子点,也就是根据你的策略完成对x,y的赋值
 		该部分对参数使用没有限制，为了方便实现，你可以定义自己新的类、.h文件、.cpp文件
 	*/
-	//Add your own code below
-     //a naive example
-	for (int i = N-1; i >= 0; i--) {
-		if (top[i] > 0) {
-			x = top[i] - 1;
-			y = i;
-			break;
-		}
+	static ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top, 2);
+	static UCT uct(M, N, &chessBoard);
+	if (lastX != chessBoard.lastX || lastY != chessBoard.lastY) {
+		// 对方有走子，需要更新当前结点和棋盘状态
+		uct.realMove(lastY);
 	}
+	y = uct.search();
+	x = uct.realMove(y);
 	
 	
 	/*

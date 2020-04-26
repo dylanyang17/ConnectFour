@@ -13,6 +13,8 @@
 #ifndef JUDGE_H_
 #define JUDGE_H_
 
+// **注意用户即对方，机器即己方**
+
 /*
 	userWin - 判断用户是否赢
 	machineWin - 判断机器是否赢

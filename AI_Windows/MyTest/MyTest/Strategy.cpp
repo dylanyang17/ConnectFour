@@ -31,12 +31,13 @@ using namespace std;
 Point* getPoint(const int M, const int N, const int* top, const int* _board, 
 	const int lastX, const int lastY, const int noX, const int noY){
 	/*
-		不要更改这段代码
+		这段代码已经被修改，不再使用 new 来开辟
 	*/
 	int x = -1, y = -1;//最终将你的落子点存到x,y中
-	int** board = new int*[M];
+	static int _boardPool[15*15];
+	static int* board[15];
 	for(int i = 0; i < M; i++){
-		board[i] = new int[N];
+		board[i] = &_boardPool[i*N];
 		for(int j = 0; j < N; j++){
 			board[i][j] = _board[i * N + j];
 		}
@@ -57,9 +58,9 @@ Point* getPoint(const int M, const int N, const int* top, const int* _board,
 	
 	
 	/*
-		不要更改这段代码
+		这段代码已经被修改
 	*/
-	clearArray(M, N, board);
+	// clearArray(M, N, board);
 	return new Point(x, y);
 }
 
@@ -76,12 +77,12 @@ void clearPoint(Point* p){
 /*
 	清除top和board数组
 */
-void clearArray(int M, int N, int** board){
-	for(int i = 0; i < M; i++){
-		delete[] board[i];
-	}
-	delete[] board;
-}
+//void clearArray(int M, int N, int** board){
+//	for(int i = 0; i < M; i++){
+//		delete[] board[i];
+//	}
+//	delete[] board;
+//}
 
 
 /*

@@ -37,6 +37,17 @@ void loadSample2(int** board) {
 	board[M - 1][3] = board[M - 2][3] = 1;
 }
 
+void load(int** board) {
+	printf("请输入局面...\n");
+	for (int i = 0; i < M; ++i) {
+		for (int j = 0; j < N; ++j) {
+			scanf_s("%d", &board[i][j]);
+		}
+	}
+	printf("先手：");
+	scanf_s("%d", &turn);
+}
+
 int main() {
 	srand(1000);
 
@@ -51,7 +62,8 @@ int main() {
 	for (int j = 0; j < N; ++j) top[j] = M;
 
 	// load Sample
-	loadSample2(board);
+	//load(board);
+	 loadSample2(board);
 
 	// update _board and top
 	for (int i = 0; i < M; i++) {

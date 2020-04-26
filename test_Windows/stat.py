@@ -85,7 +85,7 @@ def process(line, A, lineNo):
 
 def process_block(file, A):
 	line = file.readline().strip()
-	if not line.endswith(':') or not line[:-1].isnumeric():
+	if not line.endswith(':') or not line[:-1].decode('utf-8').isnumeric():
 		return False
 
 	line = file.readline()
@@ -105,7 +105,7 @@ def main():
 	namelist = os.listdir(resdir)
 	for name in namelist:
 		A = name[0:10]
-		f = open(os.path.join(resdir, name), 'r')
+		f = open(resdir + name, 'r')
 		flag = True
 		while flag:
 			flag = process_block(f, A)
