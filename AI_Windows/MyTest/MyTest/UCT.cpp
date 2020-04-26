@@ -7,20 +7,20 @@
 #include <cassert>
 #include <cmath>
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
-// #define DEBUG
+#define DEBUG
 
-UCT::UCT() 
+UCT::UCT()
 {
 	;
 }
 
-UCT::UCT(int m, int n, ChessBoard* chessBoard)
+UCT::UCT(int m, int n, ChessBoard* chessBoard, int turn)
 {
-	init(m, n, chessBoard);
+	init(m, n, chessBoard, turn);
 }
 
 // 重开一盘棋局
-void UCT::init(int m, int n, ChessBoard* chessBoard) {
+void UCT::init(int m, int n, ChessBoard* chessBoard,) {
 	while (!trash.empty())  trash.pop();
 	poolPtr = 0;
 	this->m = m;
@@ -113,13 +113,14 @@ int UCT::findExpandSon(int s) {
 
 // 扩展，从结点 s （对应chessBoard）开始走 col 列
 // 返回新扩展的结点
-int UCT::expand(int s, int col, int &row) {
+int UCT::expand(int s, int col, int& row) {
 	int t = newNode();
 	node[t].parent = s;
 	node[t].parColumn = col;
 	node[s].son[col] = t;
 	row = chessBoard->move(col);
 	node[t].status = chessBoard->getStatus();
+	node[t].isMyTurn = node[s].isMyTurn ^ 1;
 	return t;
 }
 
@@ -179,8 +180,25 @@ int UCT::defaultPolicy(int s) {
 
 
 // 计算 s 为父亲时，儿子 t 对应的得分
+// 特殊处理 t 对应 1/2 的结束情况
 double UCT::calcScore(int s, int t) {
-	return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
+	if (node[t].status == 2) {
+		if (node[s].isMyTurn) {
+			return SCORE_INF;
+		}
+		else {
+			return -SCORE_INF;
+		}
+	}
+	else if (node[t].status == 1) {
+		if (node[s].isMyTurn) {
+			return -SCORE_INF;
+		}
+		else {
+			return SCORE_INF;
+		}
+	}
+	else return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
 }
 
 

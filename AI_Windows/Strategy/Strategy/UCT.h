@@ -17,12 +17,13 @@ public:
 
 	int realMove(int col);
 
-	int calcBestColumn(int s, bool debug=false);
+	int calcBestColumn(int s, bool debug = false);
 
 	// 局面结点，连边仅需要存储落子的列
 	// 注意使用数组索引模拟指针，索引为 0 的结点被定义为 NULL
 	struct Node {
 		bool expandOver;  // 记忆化标记，是否可以确认不能再扩展
+		bool isWin;       // **当前结点非结束状态**且存在一个后继结点状态为 1/2 (直接获胜)时，isWin 为 1
 		int status;       // 结点状态。0: 未结束; 1: 对方胜利; 2: 己方胜利; 3: 平局
 		int son[12];
 		int parent;
@@ -36,7 +37,7 @@ public:
 
 		void init() {
 			// TODO: 确保全都赋予了初值
-			expandOver = false;
+			expandOver = isWin = false;
 			status = 0;
 			std::memset(son, 0, sizeof(son));
 			parent = 0;
@@ -54,7 +55,7 @@ public:
 
 	int findExpandSon(int s);
 
-	int expand(int s, int col, int &row);
+	int expand(int s, int col, int& row);
 
 	int treePolicy(int s);
 
@@ -70,9 +71,10 @@ public:
 private:
 	// TODO: TIME_LIM 和 NODE_MAX 均需要进行调整（上调）
 	const double TIME_LIM = 2.65;
-	static const int NODE_MAX = 8000000;  
+	static const int NODE_MAX = 8000000;
 	// TODO: 参数 alpha，表示对探索较少方向的倾向程度
 	const double alpha = 0.3;
+	const double SCORE_INF = 100;
 
 	const int WATCH_INTERVAL = 100;  // 每隔 100 次模拟看一次时间
 
@@ -86,7 +88,7 @@ private:
 	int nowRoot;      // 当前真实所处结点，作为根节点
 	bool debugOn = false;
 	std::stack<int> trash;
-	
+
 	ChessBoard* chessBoard;  // 整体上维持为当前局面（计算时可能临时改变一段时间）
 };
 

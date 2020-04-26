@@ -9,7 +9,7 @@
 #define timeNow() ((double)clock()/CLOCKS_PER_SEC)
 // #define DEBUG
 
-UCT::UCT() 
+UCT::UCT()
 {
 	;
 }
@@ -113,13 +113,14 @@ int UCT::findExpandSon(int s) {
 
 // 扩展，从结点 s （对应chessBoard）开始走 col 列
 // 返回新扩展的结点
-int UCT::expand(int s, int col, int &row) {
+int UCT::expand(int s, int col, int& row) {
 	int t = newNode();
 	node[t].parent = s;
 	node[t].parColumn = col;
 	node[s].son[col] = t;
 	row = chessBoard->move(col);
 	node[t].status = chessBoard->getStatus();
+	if (node[t].status == 1 || node[t].status == 2) node[s].isWin = true;
 	return t;
 }
 
@@ -179,8 +180,15 @@ int UCT::defaultPolicy(int s) {
 
 
 // 计算 s 为父亲时，儿子 t 对应的得分
+// 特殊处理 s 走到 t 就胜利的情况（称 s 为平凡必胜态），或是 t 为平凡必胜态的情况
 double UCT::calcScore(int s, int t) {
-	return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
+	if (node[t].status == 1 || node[t].status == 2) {
+		return SCORE_INF;
+	}
+	else if (node[t].isWin) {
+		return -SCORE_INF;
+	}
+	else return (double)node[t].win / node[t].tot + alpha * sqrt(2 * log(node[s].tot) / node[t].tot);
 }
 
 

@@ -49,7 +49,7 @@ Point* getPoint(const int M, const int N, const int* top, const int* _board,
 	*/
 	// 这样写虽然第一次会初始化两遍，但是能够更好的处理输入为一个残局的测试情况
 	static ChessBoard chessBoard(M, N, lastX, lastY, noX, noY, board, top, 2);
-	static UCT uct(M, N, &chessBoard);
+	static UCT uct(M, N, &chessBoard, 2);
 
 	int cnt = 0;
 	for (int i = 0; i < M; ++i) {
@@ -60,7 +60,7 @@ Point* getPoint(const int M, const int N, const int* top, const int* _board,
 	if (cnt <= 1) {
 		// 新开了一局
 		chessBoard.init(M, N, lastX, lastY, noX, noY, board, top, 2);
-		uct.init(M, N, &chessBoard);
+		uct.init(M, N, &chessBoard, 2);
 	}
 	
 	if (lastX != chessBoard.lastX || lastY != chessBoard.lastY) {

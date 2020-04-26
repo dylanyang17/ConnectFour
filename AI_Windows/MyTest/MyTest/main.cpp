@@ -37,11 +37,28 @@ void loadSample2(int** board) {
 	board[M - 1][3] = board[M - 2][3] = 1;
 }
 
+/*
+0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 2 0 0 0 0 0
+0 0 0 0 0 0 1 1 2 0 0 0
+0 2 0 0 0 1 2 1 2 0 0 0
+0 2 0 0 1 2 1 1 9 0 0 0
+2
+*/
+
 void load(int** board) {
 	printf("请输入局面...\n");
 	for (int i = 0; i < M; ++i) {
 		for (int j = 0; j < N; ++j) {
 			scanf_s("%d", &board[i][j]);
+			if (board[i][j] == 9) {
+				board[i][j] = 0;
+				noX = i, noY = j;
+			}
 		}
 	}
 	printf("先手：");
@@ -62,13 +79,13 @@ int main() {
 	for (int j = 0; j < N; ++j) top[j] = M;
 
 	// load Sample
-	//load(board);
+	load(board);
 	// loadSample2(board);
 
 	// update _board and top
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
-			if (board[i][j]) top[j] = std::min(top[j], i);
+			if (board[i][j] || (noX == i && noY == j)) top[j] = std::min(top[j], i);
 			else if (top[j] < i) {
 				printf("Wrong Sample!!!!!!!!");
 				return 0;
